@@ -1,0 +1,178 @@
+﻿<Page x:Class="MRK.Pages.DocumentPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:MRK.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="900"
+      MinHeight="300"
+      Title="Document">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- toolbar -->
+        <Grid Grid.Row="0" Background="#FF252526">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Row="0" Grid.Column="0" Padding="10, 0, 0, 0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Margin="0, 3, 0, 0" Width="30" Height="30" BorderThickness="0" Cursor="Hand" RenderTransformOrigin="0.5,0.5" Click="OnBackClick">
+                        <Button.RenderTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="90"/>
+                            </TransformGroup>
+                        </Button.RenderTransform>
+                        <Button.Background>
+                            <ImageBrush ImageSource="/img/down-chevron.png"/>
+                        </Button.Background>
+                    </Button>
+
+                    <Label VerticalAlignment="Center" Content="ALI IS BRONZE">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Setter Property="Foreground" Value="#FFF1F1F1" />
+                                <Setter Property="FontSize" Value="21" />
+                                <Setter Property="FontWeight" Value="Light" />
+
+                                <Setter Property="Margin" Value="5, 0, 0, 0" />
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="0" Grid.Column="1" Padding="30, 0">
+                <StackPanel x:Name="panelOptions" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="60">
+                    <StackPanel.Resources>
+                        <!-- button styles -->
+                        <Style x:Key="DisabledOptionStyle" TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="#FFF1F1F1"/>
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Padding" Value="0" />
+
+                            <Setter Property="Width" Value="70" />
+                            <Setter Property="Height" Value="40" />
+
+                            <Setter Property="BorderThickness" Value="0" />
+
+                            <Setter Property="FontSize" Value="14" />
+                            <Setter Property="FontWeight" Value="Normal" />
+
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#FF3F3F46"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style x:Key="EnabledOptionStyle" TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="#FF3F51B5"/>
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Padding" Value="0" />
+
+                            <Setter Property="Width" Value="70" />
+                            <Setter Property="Height" Value="40" />
+
+                            <Setter Property="BorderThickness" Value="0" />
+
+                            <Setter Property="FontSize" Value="14" />
+                            <Setter Property="FontWeight" Value="Medium" />
+
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#FF3F3F46"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Foreground" Value="#FFF1F1F1"/>
+
+                            <Setter Property="BorderThickness" Value="0" />
+
+                            <Setter Property="FontSize" Value="19" />
+                            <Setter Property="FontWeight" Value="Bold" />
+
+                            <Setter Property="Margin" Value="0, 0, 20, 0" />
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <Button Tag="opt-bold" Style="{DynamicResource DisabledOptionStyle}" Content="Bold" FontWeight="Medium" />
+                    <Button Tag="opt-italic" Style="{StaticResource DisabledOptionStyle}" Content="Italic" FontStyle="Italic" />
+                </StackPanel>
+            </Border>
+
+            <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="#3f51b5" Height="1" HorizontalAlignment="Stretch" />
+        </Grid>
+
+        <Border Grid.Row="1" Background="#FF1C1C1C" Padding="0">
+            <RichTextBox x:Name="richTextBox"  HorizontalAlignment="Center" AcceptsReturn="True" AcceptsTab="True"
+                     HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <RichTextBox.Style>
+                    <Style TargetType="{x:Type RichTextBox}">
+                        <Setter Property="Background" Value="#FF252526" />
+                        <Setter Property="Foreground" Value="#FFF1F1F1"/>
+
+                        <Setter Property="Padding" Value="50"/>
+
+                        <Setter Property="BorderThickness" Value="0" />
+
+                        <Setter Property="FontSize" Value="16" />
+                    </Style>
+                </RichTextBox.Style>
+
+                <FlowDocument>
+                    <Paragraph>
+                        hello this is MOhamed Ammar
+                        <LineBreak />
+                        Ali is bronze
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+        </Border>
+    </Grid>
+</Page>

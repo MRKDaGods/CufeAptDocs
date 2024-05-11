@@ -13,6 +13,8 @@ namespace MRK
     {
         private object? _lastDocumentOptionsSender;
 
+        private List<Document> Documents { get; set; }
+
         private Session Session
         {
             get => Client.Instance.CurrentSession!;
@@ -21,6 +23,8 @@ namespace MRK
         public HomePage()
         {
             InitializeComponent();
+
+            Documents = new();
         }
 
         private void OnHomeLoaded(object sender, RoutedEventArgs e)
@@ -57,7 +61,7 @@ namespace MRK
 
         private void OnDocumentOptionsClick(object sender, RoutedEventArgs e)
         {
-            popupDocOptions.IsOpen = sender == _lastDocumentOptionsSender ? !popupDocOptions.IsOpen : true;
+            popupDocOptions.IsOpen = sender != _lastDocumentOptionsSender || !popupDocOptions.IsOpen;
 
             _lastDocumentOptionsSender = sender;
 
@@ -79,6 +83,38 @@ namespace MRK
             }
 
             popup.VerticalOffset = position.Y + target.ActualHeight;
+        }
+
+        private void OnDocumentClick(object sender, MouseButtonEventArgs e)
+        {
+            MainWindow.Instance!.GoTo("Pages/DocumentPage");
+        }
+
+        private async void OnCreateDocumentClick(object sender, RoutedEventArgs e)
+        {
+            // wellll
+            MainWindow.Instance!.ShowMessagePopup("Creating...");
+
+            var success = await Client.Instance.CreateDocument("New Document " + new Random().Next());
+
+            MainWindow.Instance!.HideMessagePopup();
+
+            if (!success)
+            {
+                MessageBox.Show("Cannot create new document");
+                return;
+            }
+
+            OnRefreshDocumentsClick(sender, e);
+        }
+
+        private async void OnRefreshDocumentsClick(object? sender, RoutedEventArgs? e)
+        {
+            MainWindow.Instance!.ShowMessagePopup("Fetching Documents...");
+
+            Documents = await Client.Instance.GetDocuments();
+
+            MainWindow.Instance!.HideMessagePopup();
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace MRK
 {
@@ -30,6 +31,8 @@ namespace MRK
         {
             _httpClient = new HttpClient();
         }
+
+        #region Auth Controller
 
         public async Task<bool> Login(string username, string pwd)
         {
@@ -118,6 +121,64 @@ namespace MRK
 
                 _currentSession = null;
             }
+        }
+
+        #endregion
+
+        public async Task<bool> CreateDocument(string name)
+        {
+            if (_currentSession == null) return false;
+
+            var uri = BuildRequestURI("doc/create");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id,
+                name
+            });
+
+            return result.StatusCode == HttpStatusCode.OK;
+        }
+
+        public async Task<List<Document>> GetDocuments()
+        {
+            if (_currentSession == null) return [];
+
+            var uri = BuildRequestURI("doc/docs");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id
+            });
+
+            if (result.StatusCode != HttpStatusCode.OK)
+            {
+                return [];
+            }
+
+            var docs = JsonConvert.DeserializeObject<List<dynamic>>(await result.Content.ReadAsStringAsync())!;
+
+            // get edit perms
+            uri = BuildRequestURI("doc/checkperms");
+            var permsResult = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id,
+                docIds = docs.Select(x => x.id).ToList()
+            });
+
+            if (permsResult.StatusCode != HttpStatusCode.OK)
+            {
+                return [];
+            }
+
+            var perms = await permsResult.Content.ReadFromJsonAsync<Dictionary<string, bool>>();
+
+            return docs.Select(x => new Document(
+                (string)x.id,
+                (string)x.name,
+                _currentSession.User,
+                (DateTime)x.creationDate,
+                (DateTime)x.modificationDate,
+                perms![(string)x.id])
+            ).ToList();
         }
 
         private static Uri BuildRequestURI(string request)

@@ -26,8 +26,32 @@
         </Grid.ColumnDefinitions>
 
         <!-- row 0-->
-        <Label Margin="16" Content="Home" HorizontalAlignment="Left" />
-        <Label x:Name="labelUserSettings" Margin="16" Content="Mohamed" HorizontalAlignment="Right" FontWeight="Bold" Cursor="Hand" MouseDown="OnUserSettingsLabelClick" />
+        <Border Grid.Row="0" Margin="16">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="#FFF1F1F1" />
+
+                        <Setter Property="Padding" Value="20, 5" />
+                        
+                        <Setter Property="FontSize" Value="21"/>
+                        <Setter Property="FontWeight" Value="Medium"/>
+
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Cursor" Value="Hand" />
+                    </Style>
+                </StackPanel.Resources>
+
+                <Label Margin="0, 0, 32, 0" Content="Home" />
+
+                <Button x:Name="buttonCreate" Content="Create" Click="OnCreateDocumentClick" />
+                <Button x:Name="buttonRefresh" Content="Refresh" Click="OnRefreshDocumentsClick" />
+
+            </StackPanel>
+        </Border>
+        
+        <Label Grid.Row="0" x:Name="labelUserSettings" Margin="16" Content="Mohamed" HorizontalAlignment="Right" FontWeight="Bold" Cursor="Hand" MouseDown="OnUserSettingsLabelClick" />
 
         <!-- Popup for the logout panel -->
         <Popup x:Name="popupLogout" Placement="Relative" StaysOpen="True" AllowsTransparency="True" Width="300">
@@ -81,7 +105,7 @@
                             </Setter>
                         </Style>
                     </StackPanel.Resources>
-                    
+
                     <!-- options here -->
                     <Button Content="Rename" />
                     <Button Content="Change Access" />
@@ -101,9 +125,22 @@
 
                 <Label Grid.Row="0" FontSize="24" Content="Documents" />
 
-                <WrapPanel Grid.Row="1" Margin="10">
+                <WrapPanel x:Name="panelDocs" Grid.Row="1" Margin="10">
                     <!-- doc item -->
-                    <Border Background="#FF2D2D30" BorderBrush="#FF3f3f46" BorderThickness="1.5" Margin="5" Width="150" Height="200">
+                    <Border x:Name="prefabDoc" BorderThickness="1.5" Margin="5" Width="150" Height="200" Cursor="Hand" MouseDown="OnDocumentClick">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="#FF3f3f46"/>
+                                <Setter Property="Background" Value="#FF2D2D30" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="#FF3F51B5"/>
+                                        <Setter Property="Background" Value="#FF3f3f46" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -116,6 +153,8 @@
                                     <ImageBrush ImageSource="/img/down-chevron.png" Stretch="Uniform"/>
                                 </Button.Background>
                             </Button>
+
+                            <Label Grid.Row="0" Margin="5" HorizontalAlignment="Left" FontSize="12" Foreground="#FF999999" Content="12 secs ago" />
 
                             <Image Grid.Row="1" Margin="0, -20, 0, 10" Height="80" Source="/img/doc.png" />
 

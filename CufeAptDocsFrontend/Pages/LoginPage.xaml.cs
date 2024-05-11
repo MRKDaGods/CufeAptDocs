@@ -50,5 +50,13 @@ namespace MRK
         {
             MainWindow.Instance!.GoTo("Pages/RegisterPage");
         }
+
+        private void OnQuickLoginClick(object sender, RoutedEventArgs e)
+        {
+            textboxUsername.Text = "ammar";
+            textboxPwd.Password = "123456";
+
+            OnLoginClick(sender, e);
+        }
     }
 }

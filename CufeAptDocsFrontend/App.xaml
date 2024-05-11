@@ -4,93 +4,101 @@
              xmlns:local="clr-namespace:MRK"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <Style TargetType="{x:Type Window}">
-            <Setter Property="Background" Value="#FF252526" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/ColourDictionaries/SoftDark.xaml"/>
+                <ResourceDictionary Source="Themes/ControlColours.xaml"/>
+                <ResourceDictionary Source="Themes/Controls.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="DarkTextBlock" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="#FFF1F1F1" />
-            <Setter Property="FontSize" Value="16" />
-        </Style>
+            <Style TargetType="{x:Type Window}">
+                <Setter Property="Background" Value="#FF252526" />
+            </Style>
 
-        <Style TargetType="{x:Type Label}">
-            <Setter Property="Foreground" Value="#FFF1F1F1" />
-            <Setter Property="FontSize" Value="16" />
-        </Style>
+            <Style x:Key="DarkTextBlock" TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="#FFF1F1F1" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
 
-        <Style TargetType="{x:Type TextBox}">
-            <Setter Property="Background" Value="#FF333333" />
-            <Setter Property="Foreground" Value="#FFF1F1F1" />
-            <Setter Property="BorderBrush" Value="#FF434346" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Padding" Value="5" />
-        </Style>
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="Foreground" Value="#FFF1F1F1" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
 
-        <Style TargetType="{x:Type PasswordBox}">
-            <Setter Property="Background" Value="#FF333333" />
-            <Setter Property="Foreground" Value="#FFF1F1F1" />
-            <Setter Property="BorderBrush" Value="#FF434346" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Padding" Value="5" />
-        </Style>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Background" Value="#FF333333" />
+                <Setter Property="Foreground" Value="#FFF1F1F1" />
+                <Setter Property="BorderBrush" Value="#FF434346" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
 
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#FF3F51B5" />
-            <Setter Property="Foreground" Value="#FFF1F1F1" />
-            <Setter Property="BorderBrush" Value="#FF434346" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Padding" Value="8" />
+            <Style TargetType="{x:Type PasswordBox}">
+                <Setter Property="Background" Value="#FF333333" />
+                <Setter Property="Foreground" Value="#FFF1F1F1" />
+                <Setter Property="BorderBrush" Value="#FF434346" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
 
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFCA5100"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Background" Value="#FF3F51B5" />
+                <Setter Property="Foreground" Value="#FFF1F1F1" />
+                <Setter Property="BorderBrush" Value="#FF434346" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Padding" Value="8" />
 
-        <Style x:Key="DarkButton" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#FF333333" />
-            <Setter Property="Foreground" Value="#FFF1F1F1" />
-            <Setter Property="BorderBrush" Value="#FF434346" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Padding" Value="8" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                 BorderBrush="{TemplateBinding BorderBrush}"
+                 BorderThickness="{TemplateBinding BorderThickness}"
+                 Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FFCA5100"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FF3f3f46"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style x:Key="DarkButton" TargetType="{x:Type Button}">
+                <Setter Property="Background" Value="#FF333333" />
+                <Setter Property="Foreground" Value="#FFF1F1F1" />
+                <Setter Property="BorderBrush" Value="#FF434346" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Padding" Value="8" />
 
-        <Style x:Key="PopupBorder" TargetType="{x:Type Border}">
-            <Setter Property="Background" Value="#FF252526" />
-            <Setter Property="BorderBrush" Value="#FF3f3f46" />
-            <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="Padding" Value="10" />
-        </Style>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+         BorderBrush="{TemplateBinding BorderBrush}"
+         BorderThickness="{TemplateBinding BorderThickness}"
+         Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FF3f3f46"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="PopupBorder" TargetType="{x:Type Border}">
+                <Setter Property="Background" Value="#FF252526" />
+                <Setter Property="BorderBrush" Value="#FF3f3f46" />
+                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="Padding" Value="10" />
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

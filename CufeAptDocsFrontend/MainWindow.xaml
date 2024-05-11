@@ -8,7 +8,8 @@
         Width="800"
         WindowStartupLocation="CenterScreen"
         SizeToContent="Height"
-        SizeChanged="OnSizeChanged">
+        SizeChanged="OnSizeChanged"
+        Style="{DynamicResource CustomWindowStyle}">
     <Grid>
         <Frame Name="frameContent" NavigationUIVisibility="Hidden"/>
         <Popup x:Name="popupMessage" AllowsTransparency="True" IsOpen="False" Placement="Absolute" StaysOpen="True">

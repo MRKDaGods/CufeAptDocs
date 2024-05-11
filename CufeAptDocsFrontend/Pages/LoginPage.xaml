@@ -18,6 +18,8 @@
             <Rectangle Margin="25" Fill="#FF3F3F46" Height="1" HorizontalAlignment="Stretch" />
 
             <Button Style="{StaticResource DarkButton}" Content="Register" Click="OnRegisterClick" />
+
+            <Button Content="Quick" Margin="0, 30" Click="OnQuickLoginClick"/>
         </StackPanel>
     </StackPanel>
 </Page>
