@@ -24,7 +24,10 @@ namespace MRK
         {
             InitializeComponent();
 
-            Documents = new();
+            Documents = [];
+
+            // refresh
+            OnRefreshDocumentsClick(null, null);
         }
 
         private void OnHomeLoaded(object sender, RoutedEventArgs e)
@@ -48,15 +51,15 @@ namespace MRK
         {
             popupLogout.IsOpen = false;
 
-            MainWindow.Instance!.ShowMessagePopup("Logging out...");
+            this.ShowMessagePopup("Logging out...");
 
             // notify server
             await Client.Instance.Logout();
 
-            MainWindow.Instance!.HideMessagePopup();
+            this.HideMessagePopup();
 
             // go back
-            MainWindow.Instance!.GoTo("Pages/LoginPage");
+            this.GoTo("Pages/LoginPage");
         }
 
         private void OnDocumentOptionsClick(object sender, RoutedEventArgs e)
@@ -87,17 +90,21 @@ namespace MRK
 
         private void OnDocumentClick(object sender, MouseButtonEventArgs e)
         {
-            MainWindow.Instance!.GoTo("Pages/DocumentPage");
+            this.GoTo("Pages/DocumentPage");
         }
 
         private async void OnCreateDocumentClick(object sender, RoutedEventArgs e)
         {
+            // get name
+            var docName = this.GetStringFromUser("Enter New Document Name", "New Document");
+            if (docName == null) return;
+
             // wellll
-            MainWindow.Instance!.ShowMessagePopup("Creating...");
+            this.ShowMessagePopup("Creating...");
 
-            var success = await Client.Instance.CreateDocument("New Document " + new Random().Next());
+            var success = await Client.Instance.CreateDocument(docName);
 
-            MainWindow.Instance!.HideMessagePopup();
+            this.HideMessagePopup();
 
             if (!success)
             {
@@ -110,11 +117,29 @@ namespace MRK
 
         private async void OnRefreshDocumentsClick(object? sender, RoutedEventArgs? e)
         {
-            MainWindow.Instance!.ShowMessagePopup("Fetching Documents...");
+            this.ShowMessagePopup("Fetching Documents...");
 
             Documents = await Client.Instance.GetDocuments();
+            Documents.Sort((x, y) => y.ModificationDate.CompareTo(x.ModificationDate));
 
-            MainWindow.Instance!.HideMessagePopup();
+            this.HideMessagePopup();
+
+            itemsControlDocs.ItemsSource = Documents;
+        }
+
+        private void OnRenameDocumentClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnChangeAccessClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnDeleteDocumentClick(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

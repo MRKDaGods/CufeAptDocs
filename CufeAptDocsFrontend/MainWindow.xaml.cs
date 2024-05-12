@@ -47,6 +47,16 @@ namespace MRK
             });
         }
 
+        public string? GetStringFromUser(string header, string? oldText = null)
+        {
+            string? result = null;
+
+            var wnd = new InputStringWindow(header, x => result = x, oldText);
+            wnd.ShowDialog();
+
+            return result;
+        }
+
         private void RepositionMessageBox()
         {
             popupMessage.HorizontalOffset = Left + (Width - popupMessage.Child.DesiredSize.Width) / 2;
