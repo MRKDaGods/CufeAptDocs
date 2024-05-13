@@ -1,6 +1,5 @@
-﻿using System.DirectoryServices;
-using System.Windows;
-using static System.Net.Mime.MediaTypeNames;
+﻿using System.Windows;
+using System.Windows.Input;
 
 namespace MRK
 {
@@ -16,6 +15,9 @@ namespace MRK
             Instance = this;
 
             InitializeComponent();
+
+            NavigationCommands.BrowseBack.InputGestures.Clear();
+            NavigationCommands.BrowseForward.InputGestures.Clear();
 
             // go to login initially
             GoTo("Pages/LoginPage");

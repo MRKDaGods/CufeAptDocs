@@ -1,8 +1,10 @@
 ﻿using MRK.Models;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
+using FTB = FastColoredTextBoxNS;
+using System.Drawing;
+using WF = System.Windows.Forms;
 
 namespace MRK
 {
@@ -21,7 +23,16 @@ namespace MRK
         private readonly Dictionary<string, bool> _documentOptions;
         private readonly List<DocChar> _chars = [];
 
+        private FTB.FastColoredTextBox? _textbox;
+
+        private int _styleIndexBold;
+        private int _styleIndexItalic;
+        private int _styleIndexBoth;
+
+        private FTB.Range? _newTextRange;
+
         private Document Document { get; init; }
+        private FTB.FastColoredTextBox TextBox => _textbox!;
 
         public DocumentPage(Document document)
         {
@@ -34,6 +45,60 @@ namespace MRK
             InitDocumentOptions();
 
             labelDocTitle.Content = document.Name;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            _textbox = new()
+            {
+                BackColor = Color.FromArgb(37, 37, 37),
+                ForeColor = Color.FromArgb(241, 241, 241),
+
+                Font = new Font("Consolas", 16f, GraphicsUnit.Pixel),
+
+                CaretColor = Color.FromArgb(220, 220, 200),
+                Paddings = new WF.Padding(50),
+
+                ShowLineNumbers = false
+            };
+
+            _textbox.TextChanged += OnTextChanged;
+            _textbox.TextChanging += OnTextChanging;
+
+            // bold
+            _styleIndexBold = _textbox.AddStyle(new FTB.TextStyle(null, null, System.Drawing.FontStyle.Bold));
+
+            _styleIndexItalic = _textbox.AddStyle(new FTB.TextStyle(null, null, System.Drawing.FontStyle.Italic));
+
+            _styleIndexBoth = _textbox.AddStyle(new FTB.TextStyle(null, null, System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Bold));
+
+            host.Child = _textbox;
+        }
+
+        private void OnTextChanging(object? sender, FTB.TextChangingEventArgs e)
+        {
+            switch (e.InsertingText)
+            {
+                case null:
+                case "\b":
+                case "\n":
+                case "\r":
+                case "\t":
+                    return;
+            }
+
+            var start = TextBox.Selection.Start;
+
+            _newTextRange = new FTB.Range(TextBox, start, start + new FTB.Place(e.InsertingText.Length, 0));
+        }
+
+        private void OnTextChanged(object? sender, FTB.TextChangedEventArgs e)
+        {
+            if (_newTextRange != null)
+            {
+                UpdateRangeStyle(_newTextRange);
+                _newTextRange = null;
+            }
         }
 
         private void InitDocumentOptions()
@@ -59,58 +124,36 @@ namespace MRK
             // update style
             owner.SetResourceReference(StyleProperty, val ? "EnabledOptionStyle" : "DisabledOptionStyle");
 
-            switch (opt)
-            {
-                case "opt-bold":
-                    if (!SetSelectedTextBold(val))
-                    {
-                        SetCaretBold(val);
-                    }
-
-                    break;
-
-                case "opt-italic":
-                    if (!SetSelectedTextItalic(val))
-                    {
-                        SetCaretItalic(val);
-                    }
-                    break;
-            }
+            UpdateRangeStyle(TextBox.Selection);
 
             // focus tb again
-            richTextboxMain.Focus();
+            TextBox.Focus();
         }
 
-        private bool SetSelectedTextBold(bool set)
+        private void UpdateRangeStyle(FTB.Range range)
         {
-            var selection = richTextboxMain.Selection;
-            if (selection.IsEmpty)
+            var boldStyle = TextBox.Styles[_styleIndexBold];
+            var italicStyle = TextBox.Styles[_styleIndexItalic];
+            var bothStyle = TextBox.Styles[_styleIndexBoth];
+
+            // bold enabled?
+            var bold = _documentOptions["opt-bold"];
+            var italic = _documentOptions["opt-italic"];
+
+            range.ClearStyle(boldStyle, italicStyle, bothStyle);
+
+            if (bold && italic)
             {
-                return false;
+                range.SetStyle(bothStyle);
             }
-
-            selection.ApplyPropertyValue(TextElement.FontWeightProperty, set ? FontWeights.Bold : FontWeights.Normal);
-            return true;
-        }
-        
-        private void SetCaretBold(bool set)
-        {
-        }
-
-        private bool SetSelectedTextItalic(bool set)
-        {
-            var selection = richTextboxMain.Selection;
-            if (selection.IsEmpty)
+            else if (bold)
             {
-                return false;
+                range.SetStyle(boldStyle);
             }
-
-            selection.ApplyPropertyValue(TextElement.FontStyleProperty, set ? FontStyles.Italic : FontStyles.Normal);
-            return true;
-        }
-
-        private void SetCaretItalic(bool set)
-        {
+            else if (italic)
+            {
+                range.SetStyle(italicStyle);
+            }
         }
 
         private void OnBackClick(object sender, RoutedEventArgs e)

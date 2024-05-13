@@ -6,7 +6,8 @@
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="900"
       MinHeight="300"
-      Title="Document">
+      Title="Document"
+      Loaded="OnLoaded">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -148,27 +149,6 @@
             <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="#3f51b5" Height="1" HorizontalAlignment="Stretch" />
         </Grid>
 
-        <Border Grid.Row="1" Background="#FF1C1C1C" Padding="0">
-            <RichTextBox 
-                x:Name="richTextboxMain"
-                HorizontalAlignment="Center"
-                AcceptsReturn="True"
-                AcceptsTab="True"
-                HorizontalScrollBarVisibility="Auto"
-                VerticalScrollBarVisibility="Auto">
-                <RichTextBox.Style>
-                    <Style TargetType="{x:Type RichTextBox}">
-                        <Setter Property="Background" Value="#FF252526" />
-                        <Setter Property="Foreground" Value="#FFF1F1F1"/>
-
-                        <Setter Property="Padding" Value="50"/>
-
-                        <Setter Property="BorderThickness" Value="0" />
-
-                        <Setter Property="FontSize" Value="16" />
-                    </Style>
-                </RichTextBox.Style>
-            </RichTextBox>
-        </Border>
+        <WindowsFormsHost Grid.Row="1" x:Name="host" />
     </Grid>
 </Page>
