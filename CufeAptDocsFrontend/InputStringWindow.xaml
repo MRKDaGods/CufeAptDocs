@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:MRK"
         mc:Ignorable="d"
         Title="" Height="250" Width="500"
+        WindowStartupLocation="CenterScreen"
         Style="{DynamicResource CustomWindowStyle}">
     <Grid Margin="20">
         <Grid.RowDefinitions>

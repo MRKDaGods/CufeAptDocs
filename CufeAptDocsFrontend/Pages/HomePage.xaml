@@ -154,7 +154,7 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderThickness="1.5" Margin="5" Width="150" Height="200" Cursor="Hand" MouseDown="OnDocumentClick">
+                                <Border BorderThickness="1.5" Tag="{Binding .}" Margin="5" Width="150" Height="200" Cursor="Hand" MouseUp="OnDocumentClick">
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="BorderBrush" Value="#FF3f3f46"/>
@@ -175,7 +175,7 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
 
-                                        <Button Grid.Row="0" Margin="5" Width="25" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" BorderThickness="0" Cursor="Hand" Click="OnDocumentOptionsClick">
+                                        <Button Grid.Row="0" Tag="{Binding .}" Margin="5" Width="25" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" BorderThickness="0" Cursor="Hand" Click="OnDocumentOptionsClick">
                                             <Button.Background>
                                                 <ImageBrush ImageSource="/img/down-chevron.png" Stretch="Uniform"/>
                                             </Button.Background>

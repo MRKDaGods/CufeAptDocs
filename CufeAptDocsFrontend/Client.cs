@@ -27,7 +27,7 @@ namespace MRK
         /// </summary>
         public static Client Instance { get => _instance ??= new(); }
 
-        public Client() 
+        public Client()
         {
             _httpClient = new HttpClient();
         }
@@ -81,7 +81,7 @@ namespace MRK
                 MessageBox.Show("Cannot retrieve user data");
                 return false;
             }
-            
+
             _currentSession = new Session((string)session.id, user);
             return true;
 #endif
@@ -95,7 +95,8 @@ namespace MRK
             return true;
 #else
             var uri = BuildRequestURI("auth/register");
-            var result = await _httpClient.PostAsJsonAsync(uri, new {
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
                 username,
                 email,
                 password = pwd
@@ -105,7 +106,7 @@ namespace MRK
 #endif
         }
 
-        public async Task Logout() 
+        public async Task Logout()
         {
             if (_currentSession != null)
             {
@@ -125,6 +126,7 @@ namespace MRK
 
         #endregion
 
+        #region Document Controller
         public async Task<bool> CreateDocument(string name)
         {
             if (_currentSession == null) return false;
@@ -134,6 +136,35 @@ namespace MRK
             {
                 sessionId = _currentSession.Id,
                 name
+            });
+
+            return result.StatusCode == HttpStatusCode.OK;
+        }
+
+        public async Task<bool> RenameDocument(Document doc, string name)
+        {
+            if (_currentSession == null) return false;
+
+            var uri = BuildRequestURI("doc/rename");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id,
+                docId = doc.Id,
+                name
+            });
+
+            return result.StatusCode == HttpStatusCode.OK;
+        }
+
+        public async Task<bool> DeleteDocument(Document doc)
+        {
+            if (_currentSession == null) return false;
+
+            var uri = BuildRequestURI("doc/delete");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id,
+                docId = doc.Id
             });
 
             return result.StatusCode == HttpStatusCode.OK;
@@ -180,6 +211,7 @@ namespace MRK
                 perms![(string)x.id])
             ).ToList();
         }
+        #endregion
 
         private static Uri BuildRequestURI(string request)
         {

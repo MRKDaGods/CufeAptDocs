@@ -20,6 +20,11 @@ namespace MRK
             get => Client.Instance.CurrentSession!;
         }
 
+        private Document? LastDocumentOptions
+        {
+            get => (_lastDocumentOptionsSender as Button)?.Tag as Document;
+        }
+
         public HomePage()
         {
             InitializeComponent();
@@ -90,7 +95,10 @@ namespace MRK
 
         private void OnDocumentClick(object sender, MouseButtonEventArgs e)
         {
-            this.GoTo("Pages/DocumentPage");
+            // this.GoTo("Pages/DocumentPage");
+
+            MainWindow.Instance?.frameContent.Navigate(
+                new DocumentPage((Document)((Border)sender).Tag));
         }
 
         private async void OnCreateDocumentClick(object sender, RoutedEventArgs e)
@@ -127,19 +135,60 @@ namespace MRK
             itemsControlDocs.ItemsSource = Documents;
         }
 
-        private void OnRenameDocumentClick(object sender, RoutedEventArgs e)
+        private async void OnRenameDocumentClick(object sender, RoutedEventArgs e)
         {
+            // close regardless
+            popupDocOptions.IsOpen = false;
 
+            var doc = LastDocumentOptions;
+            if (doc == null) return;
+
+            var newName = this.GetStringFromUser("Rename Document", doc.Name);
+            if (newName == null) return;
+
+            // do req
+            var result = await Client.Instance.RenameDocument(doc, newName);
+            if (!result)
+            {
+                MessageBox.Show("Cannot rename document!");
+                return;
+            }
+
+            // refresh
+            OnRefreshDocumentsClick(null, null);
         }
 
-        private void OnChangeAccessClick(object sender, RoutedEventArgs e)
+        private async void OnChangeAccessClick(object sender, RoutedEventArgs e)
         {
+            // close regardless
+            popupDocOptions.IsOpen = false;
 
+            await Task.Delay(1);
         }
 
-        private void OnDeleteDocumentClick(object sender, RoutedEventArgs e)
+        private async void OnDeleteDocumentClick(object sender, RoutedEventArgs e)
         {
+            // close regardless
+            popupDocOptions.IsOpen = false;
 
+            var doc = LastDocumentOptions;
+            if (doc == null) return;
+
+            if (MessageBox.Show("Are you sure?", "Delete Document", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            // do req
+            var result = await Client.Instance.DeleteDocument(doc);
+            if (!result)
+            {
+                MessageBox.Show("Cannot delete document!");
+                return;
+            }
+
+            // refresh
+            OnRefreshDocumentsClick(null, null);
         }
     }
 }
