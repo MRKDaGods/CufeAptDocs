@@ -93,12 +93,16 @@ namespace MRK
             popup.VerticalOffset = position.Y + target.ActualHeight;
         }
 
-        private void OnDocumentClick(object sender, MouseButtonEventArgs e)
+        private async void OnDocumentClick(object sender, MouseButtonEventArgs e)
         {
             // this.GoTo("Pages/DocumentPage");
+            var doc = (Document)((Border)sender).Tag;
+            var users = await Client.Instance.GetDocumentUsers(doc);
+
+            var isReadOnly = users.Where(x => x.Key.Id == Session.User.Id).Select(x => x.Value).FirstOrDefault();
 
             MainWindow.Instance?.frameContent.Navigate(
-                new DocumentPage((Document)((Border)sender).Tag));
+                new DocumentPage(doc, !isReadOnly));
         }
 
         private async void OnCreateDocumentClick(object sender, RoutedEventArgs e)

@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:wv="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="900"
       MinHeight="300"
@@ -140,15 +141,12 @@
                             <Setter Property="Margin" Value="0, 0, 20, 0" />
                         </Style>
                     </StackPanel.Resources>
-
-                    <Button Tag="opt-bold" Style="{DynamicResource DisabledOptionStyle}" Content="Bold" FontWeight="Medium" />
-                    <Button Tag="opt-italic" Style="{StaticResource DisabledOptionStyle}" Content="Italic" FontStyle="Italic" />
                 </StackPanel>
             </Border>
 
             <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="#3f51b5" Height="1" HorizontalAlignment="Stretch" />
         </Grid>
 
-        <WindowsFormsHost Grid.Row="1" x:Name="host" />
+        <wv:WebView2 Grid.Row="1" Name="webView" />
     </Grid>
 </Page>
