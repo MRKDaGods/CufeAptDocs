@@ -31,6 +31,11 @@ namespace MRK
 
         private FTB.Range? _newTextRange;
 
+        // OT stuff
+        private NetClient client;
+        private bool isLocalChange = false;
+        private string previousText;
+
         private Document Document { get; init; }
         private FTB.FastColoredTextBox TextBox => _textbox!;
 
@@ -45,6 +50,62 @@ namespace MRK
             InitDocumentOptions();
 
             labelDocTitle.Content = document.Name;
+
+            // OT client
+            client = new NetClient(ApplyOperation);
+            client.Connect("localhost", 23466, "yo");
+        }
+
+        private int FindChangeStart(string oldText, string newText)
+        {
+            int minLength = Math.Min(oldText.Length, newText.Length);
+            for (int i = 0; i < minLength; i++)
+            {
+                if (oldText[i] != newText[i])
+                {
+                    return i;
+                }
+            }
+            return minLength;
+        }
+
+        private int FindChangeEnd(string oldText, string newText, int start)
+        {
+            int oldLength = oldText.Length;
+            int newLength = newText.Length;
+            int minLength = Math.Min(oldLength, newLength);
+
+            for (int i = 0; i < minLength - start; i++)
+            {
+                if (oldText[oldLength - 1 - i] != newText[newLength - 1 - i])
+                {
+                    return newLength - i;
+                }
+            }
+            return newLength;
+        }
+
+        private void ApplyOperation(Operation operation)
+        {
+            isLocalChange = true;
+
+            if (operation is InsertOperation insertOperation)
+            {
+                var place = TextBox.PositionToPlace(insertOperation.Position);
+                TextBox.Selection.Start = place;
+                TextBox.InsertText(insertOperation.Text);
+            }
+            else if (operation is DeleteOperation deleteOperation)
+            {
+                var start = TextBox.PositionToPlace(deleteOperation.Position);
+                var end = TextBox.PositionToPlace(deleteOperation.Position + deleteOperation.Length);
+                TextBox.Selection.Start = start;
+                TextBox.Selection.End = end;
+                TextBox.ClearSelected();
+            }
+
+            isLocalChange = false;
+            previousText = TextBox.Text;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -73,6 +134,8 @@ namespace MRK
             _styleIndexBoth = _textbox.AddStyle(new FTB.TextStyle(null, null, System.Drawing.FontStyle.Italic | System.Drawing.FontStyle.Bold));
 
             host.Child = _textbox;
+
+            previousText = TextBox.Text;
         }
 
         private void OnTextChanging(object? sender, FTB.TextChangingEventArgs e)
@@ -98,6 +161,30 @@ namespace MRK
             {
                 UpdateRangeStyle(_newTextRange);
                 _newTextRange = null;
+            }
+
+            if (!isLocalChange && client != null && client.IsConnected)
+            {
+                var currentText = TextBox.Text;
+                var changeStart = FindChangeStart(previousText, currentText);
+                var changeEnd = FindChangeEnd(previousText, currentText, changeStart);
+
+                if (changeStart < changeEnd)
+                {
+                    // Text was added
+                    var insertedText = currentText.Substring(changeStart, changeEnd - changeStart);
+                    var insertOperation = new InsertOperation(changeStart, insertedText, client.UserId);
+                    client.SendOperation(insertOperation);
+                }
+                else if (changeStart > changeEnd)
+                {
+                    // Text was removed
+                    var deleteLength = previousText.Length - currentText.Length;
+                    var deleteOperation = new DeleteOperation(changeStart, deleteLength, client.UserId);
+                    client.SendOperation(deleteOperation);
+                }
+
+                previousText = currentText;
             }
         }
 
