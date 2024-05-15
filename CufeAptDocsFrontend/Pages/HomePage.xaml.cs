@@ -158,12 +158,16 @@ namespace MRK
             OnRefreshDocumentsClick(null, null);
         }
 
-        private async void OnChangeAccessClick(object sender, RoutedEventArgs e)
+        private void OnChangeAccessClick(object sender, RoutedEventArgs e)
         {
             // close regardless
             popupDocOptions.IsOpen = false;
 
-            await Task.Delay(1);
+            var doc = LastDocumentOptions;
+            if (doc == null) return;
+
+            var wnd = new ManageAccessWindow(doc);
+            wnd.ShowDialog();
         }
 
         private async void OnDeleteDocumentClick(object sender, RoutedEventArgs e)

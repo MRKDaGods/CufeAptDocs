@@ -1,0 +1,118 @@
+﻿<Window x:Class="MRK.ManageAccessWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MRK"
+        mc:Ignorable="d"
+        Title="Manage Access" Height="430" Width="625"
+        WindowStartupLocation="CenterScreen"
+        Style="{DynamicResource CustomWindowStyle}"
+        DataContext="{RelativeSource Mode=Self}">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Add new user -->
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="textboxNewUser"
+                     Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                     VerticalContentAlignment="Center"
+                     TextChanged="OnNewUserTextChanged" />
+
+            <ComboBox x:Name="comboboxNewPerms" Grid.Row="0" Grid.Column="2" Margin="5, 0" Width="100" SelectedIndex="0">
+                <ComboBoxItem Content="Viewer"/>
+                <ComboBoxItem Content="Editor"/>
+            </ComboBox>
+
+            <Button Grid.Row="0" Grid.Column="3" Width="70"
+                    Content="Add"
+                    Click="OnAddClick"/>
+
+            <Button Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
+                    Style="{StaticResource DarkButton}"
+                    Margin="5, 5, 0, 0"
+                    Click="OnRefreshClick"
+                    Content="Refresh" />
+        </Grid>
+
+        <Popup x:Name="popupUserSuggestions"
+               Placement="Relative"
+               PlacementTarget="{Binding ElementName=textboxNewUser}"
+               VerticalOffset="40"
+               AllowsTransparency="True"
+               Width="450"
+               MinHeight="200"
+               MaxHeight="300">
+            <Border Background="#FF252526" BorderBrush="#FF3f3f46" BorderThickness="1" Padding="10">
+                <StackPanel>
+                    <Button Style="{StaticResource DarkButton}" HorizontalAlignment="Right" Content="Close" Margin="5, 0" Width="100" Click="OnPopupClose" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="itemsControlUserSuggestions" ItemsSource="{Binding UserSuggestions}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="5"
+                                        Tag="{Binding .}"
+                                        Content="{Binding Username}"
+                                        Click="OnSuggestionClick" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <!-- available users -->
+            <ItemsControl x:Name="itemsControlUsers" ItemsSource="{Binding DocumentUsers}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="#252526" Margin="0, 10, 0, 0" Padding="5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.ColumnSpan="2" Content="{Binding User.Username}" VerticalAlignment="Center" />
+                                <ComboBox Grid.Row="0" Grid.Column="2" Tag="{Binding .}" Margin="5, 0" Width="100" SelectedIndex="{Binding HasEditPermission, Mode=OneWay}" SelectionChanged="OnPermChanged">
+                                    <ComboBoxItem Content="Viewer"/>
+                                    <ComboBoxItem Content="Editor"/>
+                                </ComboBox>
+                                <Button Grid.Row="0" Grid.Column="3" Tag="{Binding User}" Width="70" Background="OrangeRed" Content="Delete" Click="OnDeleteClick" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Window>

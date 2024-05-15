@@ -2,11 +2,14 @@
 
 using MRK.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Windows;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace MRK
 {
@@ -124,6 +127,24 @@ namespace MRK
             }
         }
 
+        public async Task<List<User>> SearchUsers(string query)
+        {
+            if (_currentSession == null) return [];
+
+            var uri = BuildRequestURI("auth/search");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                query
+            });
+
+            if (result.StatusCode != HttpStatusCode.OK) 
+            {
+                return [];
+            }
+
+            return JsonConvert.DeserializeObject<List<User>>(await result.Content.ReadAsStringAsync())!;
+        }
+
         #endregion
 
         #region Document Controller
@@ -192,7 +213,7 @@ namespace MRK
             var permsResult = await _httpClient.PostAsJsonAsync(uri, new
             {
                 sessionId = _currentSession.Id,
-                docIds = docs.Select(x => x.id).ToList()
+                docIds = docs.Select(x => (string)x.id).ToList()
             });
 
             if (permsResult.StatusCode != HttpStatusCode.OK)
@@ -210,6 +231,77 @@ namespace MRK
                 (DateTime)x.modificationDate,
                 perms![(string)x.id])
             ).ToList();
+        }
+
+        public async Task<Dictionary<User, bool>> GetDocumentUsers(Document document)
+        {
+            if (_currentSession == null) return [];
+
+            var uri = BuildRequestURI("doc/users");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id,
+                docId = document.Id
+
+            });
+
+            if (result.StatusCode != HttpStatusCode.OK)
+            {
+                return [];
+            }
+
+            var res = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(await result.Content.ReadAsStringAsync())!;
+
+            return res
+                .Select(x => KeyValuePair.Create(((JObject)x.Value.user).ToObject<User>()!, (bool)x.Value.write))
+                .ToDictionary();
+        }
+
+        public async Task<bool> AddUserToDocument(User user, Document doc, bool edit)
+        {
+            if (_currentSession == null) return false;
+
+            var uri = BuildRequestURI("doc/adduser");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id,
+                docId = doc.Id,
+                userId = user.Id,
+                edit
+            });
+
+            return result.StatusCode == HttpStatusCode.OK;
+        }
+
+        public async Task<bool> DeleteUserFromDocument(User user, Document doc)
+        {
+            if (_currentSession == null) return false;
+
+            var uri = BuildRequestURI("doc/deleteuser");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id,
+                docId = doc.Id,
+                userId = user.Id
+            });
+
+            return result.StatusCode == HttpStatusCode.OK;
+        }
+
+        public async Task<bool> ModifyUserInDocument(User user, Document doc, bool edit)
+        {
+            if (_currentSession == null) return false;
+
+            var uri = BuildRequestURI("doc/modifyuser");
+            var result = await _httpClient.PostAsJsonAsync(uri, new
+            {
+                sessionId = _currentSession.Id,
+                docId = doc.Id,
+                userId = user.Id,
+                edit
+            });
+
+            return result.StatusCode == HttpStatusCode.OK;
         }
         #endregion
 
