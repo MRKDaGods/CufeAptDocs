@@ -1,6 +1,7 @@
 ﻿using MRK.Models;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MRK
 {
@@ -9,6 +10,8 @@ namespace MRK
     /// </summary>
     public partial class DocumentPage : Page
     {
+        private readonly string _role;
+
         private bool ReadOnly { get; init; }
         private Document Document { get; init; }
 
@@ -21,25 +24,34 @@ namespace MRK
 
             labelDocTitle.Content = document.Name;
 
-            InitializeWebView2();
+            _role = readOnly ? "Viewer" : document.OwnerId == Client.Instance.CurrentSession.User.Id ? "Owner" : "Editor";
+
+            labelRole.Content = _role;
+
+            textboxServerIp.KeyDown += OnServerIPKeyDown;
 
             webView.PreviewKeyDown += WebView_PreviewKeyDown;
         }
 
-        private void WebView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void OnServerIPKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+
+                await webView.EnsureCoreWebView2Async();
+
+                webView.CoreWebView2.Navigate($"https://cufe-apt-docs-proxy-frontend.vercel.app/edit/{Document.Id}/{_role}/{Client.Instance.CurrentSession.User.Username}/{Uri.EscapeDataString(textboxServerIp.Text)}");
+            }
+        }
+
+        private void WebView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (ReadOnly)
             {
                 e.Handled = true;
             }
         }
-
-        private async void InitializeWebView2()
-        {
-            await webView.EnsureCoreWebView2Async(null);
-            webView.Source = new Uri("http://localhost:3000/");
-        }
-
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {

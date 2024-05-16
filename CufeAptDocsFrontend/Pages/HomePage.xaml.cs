@@ -170,6 +170,8 @@ namespace MRK
             var doc = LastDocumentOptions;
             if (doc == null) return;
 
+            if (Client.Instance.CurrentSession.User.Id != doc.OwnerId) return;
+
             var wnd = new ManageAccessWindow(doc);
             wnd.ShowDialog();
         }

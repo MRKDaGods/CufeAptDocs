@@ -226,7 +226,7 @@ namespace MRK
             return docs.Select(x => new Document(
                 (string)x.id,
                 (string)x.name,
-                _currentSession.User,
+                (string)x.ownerId,
                 (DateTime)x.creationDate,
                 (DateTime)x.modificationDate,
                 perms![(string)x.id])

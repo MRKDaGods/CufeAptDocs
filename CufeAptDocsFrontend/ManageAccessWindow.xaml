@@ -103,7 +103,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Label Grid.Row="0" Grid.ColumnSpan="2" Content="{Binding User.Username}" VerticalAlignment="Center" />
-                                <ComboBox Grid.Row="0" Grid.Column="2" Tag="{Binding .}" Margin="5, 0" Width="100" SelectedIndex="{Binding HasEditPermission, Mode=OneWay}" SelectionChanged="OnPermChanged">
+                                <ComboBox Grid.Row="0" Grid.Column="2" Tag="{Binding .}" Margin="5, 0" Width="100" SelectedIndex="{Binding HasEditPermission, Mode=OneWay}" SelectionChanged="OnPermChanged" Loaded="OnComboboxLoaded">
                                     <ComboBoxItem Content="Viewer"/>
                                     <ComboBoxItem Content="Editor"/>
                                 </ComboBox>

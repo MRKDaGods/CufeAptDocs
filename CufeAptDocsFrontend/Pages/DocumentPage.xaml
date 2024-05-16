@@ -60,8 +60,16 @@
                 </StackPanel>
             </Border>
 
-            <Border Grid.Row="0" Grid.Column="1" Padding="30, 0">
-                <StackPanel x:Name="panelOptions" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Height="60">
+            <TextBox x:Name="textboxServerIp"
+                     Grid.Row="0"
+                     Grid.Column="1"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     MaxLines="1"
+                     Text="http://127.0.0.1:8996" />
+
+            <Border Grid.Row="0" Grid.Column="2" Padding="30, 0">
+                <StackPanel x:Name="panelOptions" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Height="60">
                     <StackPanel.Resources>
                         <!-- button styles -->
                         <Style x:Key="DisabledOptionStyle" TargetType="{x:Type Button}">
@@ -135,18 +143,17 @@
 
                             <Setter Property="BorderThickness" Value="0" />
 
-                            <Setter Property="FontSize" Value="19" />
-                            <Setter Property="FontWeight" Value="Bold" />
-
-                            <Setter Property="Margin" Value="0, 0, 20, 0" />
+                            <Setter Property="FontSize" Value="16" />
                         </Style>
                     </StackPanel.Resources>
+
+                    <Label x:Name="labelRole" Content="Owner" VerticalAlignment="Center" HorizontalAlignment="Right" />
                 </StackPanel>
             </Border>
 
             <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="#3f51b5" Height="1" HorizontalAlignment="Stretch" />
         </Grid>
 
-        <wv:WebView2 Grid.Row="1" Name="webView" />
+        <wv:WebView2 Grid.Row="1" Name="webView" DefaultBackgroundColor="#262627" />
     </Grid>
 </Page>

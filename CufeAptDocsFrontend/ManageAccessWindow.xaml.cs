@@ -137,7 +137,7 @@ namespace MRK
 
             var cb = sender as ComboBox;
             var docUser = cb?.Tag as DocumentUser;
-            if (docUser == null)
+            if (docUser == null || docUser.User.Id == docUser.Document.OwnerId)
             {
                 return;
             }
@@ -160,6 +160,25 @@ namespace MRK
             }
 
             IsEnabled = true;
+        }
+
+        private void OnComboboxLoaded(object sender, RoutedEventArgs e)
+        {
+            var cb = sender as ComboBox;
+            var docUser = cb?.Tag as DocumentUser;
+            if (docUser == null)
+            {
+                return;
+            }
+
+            if (docUser.User.Id == docUser.Document.OwnerId)
+            {
+                // owner
+                cb!.Items.Clear();
+                cb!.Items.Add(new ComboBoxItem { Content = "Owner" });
+                cb!.SelectedIndex = 0;
+                cb!.IsEnabled = false;
+            }
         }
     }
 }
